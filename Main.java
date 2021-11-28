@@ -1,63 +1,69 @@
 import java.io.*;
+import java.util.*;
 
 public class Main {
 
-   public static void babelek(int[] tablica, int rozmiar) {
-      int tmp;
-      int i, j;
-      for ( i = 1; i < rozmiar; i++ )
-         for ( j = 1; j < rozmiar; j++ )
-            if ( tablica[j-1] > tablica[j] ) {
-               tmp = tablica[j-1];
-               tablica[j-1] = tablica[j];
-               tablica[j] = tmp;
-            }
-   }
+  public static void losuj_tablice(int[][] m, int x, int y, int h) {
+      Random rand = new Random();
+      for ( int i = 0; i < x; i++ ) {
+          for ( int j = 0; j < y; j++ ) {
 
-   public static int suma(int[] tablica, int rozmiar) {
-      int s = 0;
-      for ( int i = 0; i < rozmiar; i++ )
-         s += tablica[i];
-      return s;
-   }
-
-   public static int minimum(int[] tablica, int rozmiar) {
-      int min = tablica[0];
-      for ( int i = 1; i < rozmiar; i++ )
-         if ( tablica[i] < min )
-            min = tablica[i];
-      return min;
-   }
-   
-   public static void wczytaj_tablice(int[] tablica, int rozmiar) throws IOException {
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      for ( int i = 0; i < rozmiar; i++ ) {
-         System.out.println("Podaj liczbe (tablica["+i+"]): ");
-         tablica[i] = Integer.parseInt(in.readLine());
-      }
-   }
-   
-   public static void wypisz_tablice(int[] tablica, int rozmiar) {
-      for ( int i = 0; i < rozmiar; i++ )
-         System.out.println("tablica["+i+"] = "+tablica[i]);
-   }
+              m[i][j] = rand.nextInt(h+1);
+              System.out.println("Element ["+i+"]["+j+"]: " + m[i][j]);
+          }
+        }
+    }
 
    public static void main(String[] args) {
       try {
          BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-         int r;
-         System.out.println("Podaj rozmiar: ");
-         r = Integer.parseInt(in.readLine());
-         int[] t = new int[r];
-         wczytaj_tablice(t, r);
+         int x, y;
+         System.out.println("Podaj liczbe wierszy macierzy: ");
+         x = Integer.parseInt(in.readLine());
+         System.out.println("Podaj liczbe kolumn macierzy: ");
+         y = Integer.parseInt(in.readLine());        
+         int[][] m = new int[x][y];
+         losuj_tablice(m, x, y, 100);
+        //  for ( int i = 0; i < x; i++ ) {
+        //     for ( int j = 0; j < y; j++ ) {
+        //        System.out.println("Podaj element ["+i+"]["+j+"]: ");
+        //        m[i][j] = Integer.parseInt(in.readLine());
+        //     }
+        //  }
          
-         System.out.println("Tablica przed posortowaniem:");
-         wypisz_tablice(t, r);
+         int min_x = 0, min_y = 0, min_i;
+         int[] min_w = new int[x];
+         for ( int i = 0; i < x; i++ ) {
+            min_i = 0;
+            for ( int j = 0; j < y; j++ ){
+               if ( m[i][j] < m[min_x][min_y] ) {
+                  min_x = i;
+                  min_y = j;
+               }
 
-         babelek(t, r);
-         System.out.println("Tablica posortowana:");
-         wypisz_tablice(t, r);
- 
+               if ( m[i][j] < m[i][min_i] ) {
+                  min_i = j;
+               }
+            }
+            min_w[i] = min_i;
+         }
+         
+         System.out.println("Najmniejszy element znajduje sie w wierszu nr "+
+                            (min_x)+" i kolumnie nr "+(min_y)+
+                            " a jego wartosc wynosi "+m[min_x][min_y]);
+        
+        int max_min=0, value;
+        int suma = 0;
+        for ( int i = 0; i < x; i++ ){
+          value = m[i][min_w[i]];
+          suma += value;
+           System.out.println("Najmniejszy element w wierszu nr " + i + " wynosi: " + value);
+           if ( value > m[max_min][min_w[max_min]] ) {
+                  max_min = i;
+            }
+        }
+        System.out.println("Największy z mininum jest w wierszu nr " + max_min + " wynosi: " + m[max_min][min_w[max_min]]);
+        System.out.println("Średnia z mininum wynosi: " + suma / (float)x);
       } catch(IOException e) {
       }
    }
@@ -65,10 +71,8 @@ public class Main {
 
 /*
  * Cwiczenia:
- * 1. Zastanow sie jak ulepszyc (zmniejszyc liczbe iteracji) 
- * zaproponowana funkcje sortujaca (tzw. sortowanie babelkowe).
- * 2. Sprobuj wykorzystac biblioteczna metode 
- * java.util.Arrays.sort() do posortowania tablicy. 
- * Jaki algorytm sortowania zaimplementowany jest w tej metodzie?
+ * 1. Znajdz najwieksze z minimow poszczegolnych wierszy.
+ * 2. Policz srednia minimow wierszy.
  */
+
  
